@@ -1,20 +1,11 @@
-import sys, os
-
-# for PyQt
-sys.path.append('/usr/lib/python2.7/dist-packages')
-from PyQt4 import QtGui, QtCore
-from PyQt4.Qt import *
-
-
 from calibre.ebooks.metadata.sources.base import Source
 from calibre.ebooks.metadata.book.base import Metadata
-
 from common import *
-
 from CGetter import *
 
 
-from PyQt4.Qt import QWidget, QHBoxLayout, QVBoxLayout, QLabel, QLineEdit
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLabel, QApplication
+
 
 class ConfigWidget(QWidget):
 
@@ -123,34 +114,3 @@ class GetCitation(Source):
         dlog("=" * 20)
 
         return None
-
-
-
-if __name__ == "__main__":
-    from Queue import Queue
-    from threading import Event
-    import pprint
-    import termcolor
-
-    CGetter.USE_TEST_DATA = True
-    if CGetter.USE_TEST_DATA:
-        print termcolor.colored("    >>> USING TEST DATA <<<", "yellow", None, ["bold"])
-
-    identifiers = {
-        'pmid': "15798944",
-        'doi': '10.1055/s-2005-867080',
-        }
-    if True:
-        dc = {}
-        for Getter in CGetter.getter_list:
-            entry_id = identifiers.get(Getter.entry_identifier, None)
-            if entry_id and Getter.does_understand(entry_id):
-                dlog('USING', Getter)
-                dc = Getter.resolve(entry_id)
-            pprint.pprint(dc)
-    else:
-
-        app = QtGui.QApplication([])
-        # ConfigWidget(None)
-        cg = GetCitation(None)
-        dc = cg.identify(None, Queue(), Event(), identifiers = identifiers)
