@@ -3,10 +3,6 @@ import habanero
 import json
 from common import *
 
-# import xmltodict
-from lxml import etree
-import os
-
 
 class Validator:
     @staticmethod
@@ -77,7 +73,7 @@ class CrossRefGetter(CGetter):
                                          format='citeproc-json'))
         dc = {
             "title": paper_meta['title'],
-            # "pubdate": paper_meta['published-print']['date-parts'],
+            "pubdate": paper_meta['published-print']['date-parts'],
             "author_sort": '',
             "publisher": paper_meta['publisher'],
             "issue": '',
