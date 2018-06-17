@@ -1,7 +1,4 @@
 import sys
-# other system-wide
-sys.path.append('venv/lib/python2.7/site-packages')
-
 import termcolor
 import datetime
 
