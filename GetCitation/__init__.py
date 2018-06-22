@@ -98,10 +98,11 @@ class GetCitation(Source):
         for attr in ("pubdate",
                      "publisher",
                      "issue",
-                     "abstract",
+                     "comments",
                      "keywords",
                      "volume",
                      "pages",
+                     "rating",
                      ):
             if hasattr(mi, attr) and attr in dc:
                 setattr(mi, attr, dc[attr])
