@@ -15,7 +15,14 @@ def mapget(el, *argv):
 
 
 def mapget_text(el, *argv):
-    return [got is not None and got.text or "" for got in mapget(el, *argv)]
+    return [got is not None and got.text or "" for got in mapget(el[0], *argv)]
+
+
+def get_date(el, *argv):
+    date_ = [0, 0, 0]
+    for i in range(len(el)):
+        date_[i] = el[i] + date_[i]
+    return date_
 
 
 class CGetter:
@@ -41,18 +48,16 @@ class CGetter:
 
 
 def process_pubdate(el_pubdate, *timekey):
-    if len(el_pubdate):
-        _year, _month, _day = mapget_text(el_pubdate[0], *timekey)
-        month = day = 1
+    if el_pubdate:
+        _year, _month, _day = get_date(el_pubdate[0], *timekey)
+        month = 1
+        day = 15
         if _year:
             if _month:
-                if _month.isdigit():
-                    month = int(_month)
-                elif len(_month) is 3:
-                    month = time.strptime(_month, "%b").tm_mon
-                if _day:
-                    day = int(_day)
-            return datetime.datetime(int(_year), month, day)
+                month = _month
+            if _day:
+                day = _day
+            return datetime.datetime(_year, month, day)
 
 
 @CGetter.add
@@ -71,17 +76,14 @@ class CrossRefGetter(CGetter):
         paper_meta = json.loads(
             habanero.content_negotiation(ids=identifier,
                                          format='citeproc-json'))
-        dc = {
+        return {
             "title": paper_meta['title'],
-            "pubdate": paper_meta['published-print']['date-parts'],
-            "author_sort": '',
-            "publisher": paper_meta['publisher'],
-            "issue": '',
-            "abstract": paper_meta['container-title'],
-            "keywords": '',
-            "volume": '',
-            "pages": '',
+            "pubdate": process_pubdate(paper_meta['published-print']['date-parts'],
+                                       "year", "month", "day"),
+            "publisher": '{} {}'.format(paper_meta['publisher'],
+                                        paper_meta['publisher-location']),
+            "comments": paper_meta['container-title'],
             "authors": ['{} {}'.format(author['given'], author['family'])
                         for author in paper_meta['author']],
+            "rating": paper_meta["score"],
         }
-        return dc
